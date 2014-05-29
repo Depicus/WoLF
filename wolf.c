@@ -22,8 +22,18 @@
 #include <sys/ioctl.h>
 #include <sys/types.h>
 
-#define PPPNAME "ppp0"
-#define ETHNAME "eth0"
+
+
+
+#ifdef __APPLE__
+   //define something for os x
+   #define ETHNAME "en0"
+   #define PPPNAME "en0"
+#else
+  //define it for anything else
+  #define ETHNAME "eth0"
+  #define PPPNAME "ppp0"
+#endif
 
 char ppp0a[16];
 char str[1024];
@@ -50,7 +60,7 @@ char const *getadapteraddress(char adapter[5])
     ifr.ifr_addr.sa_family = AF_INET;
     ioctl(fd, SIOCGIFADDR, &ifr);
     addr=(u_char*)&(((struct sockaddr_in * )&ifr.ifr_addr)->sin_addr);
-    printf("eth %s, addr %d.%d.%d.%d\n", ifr.ifr_name,addr[0],addr[1],addr[2],addr[3]);
+    //printf("eth %s, addr %d.%d.%d.%d\n", ifr.ifr_name,addr[0],addr[1],addr[2],addr[3]);
     sprintf (ppp0a,"%d.%d.%d.%d",addr[0],addr[1],addr[2],addr[3]);
 
     // get the subnet mask
@@ -74,7 +84,7 @@ char const *getadapteraddress(char adapter[5])
 }
 
 int main(void) {
-	printf("Starting WoLf:\n");
+	printf("Starting WoLf (Wake On Lan Forwarder) \n\n");
 	char const *cptr;
 	cptr = getadapteraddress(PPPNAME);
 	printf("ppp0 = %s\n",cptr);
