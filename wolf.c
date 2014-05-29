@@ -2,9 +2,9 @@
  ============================================================================
  Name        : wolf.c
  Author      : Depicus
- Version     :
- Copyright   : Your copyright notice
- Description : Hello World in C, Ansi-style
+ Version     : 1.1
+ Copyright   : One of the free ones, not sure - who cares
+ Description : Wake on Lan Forwarder or WolF for short allows you to redirect WoL packets over the internet.
  ============================================================================
  */
 
