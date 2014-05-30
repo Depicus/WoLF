@@ -7,6 +7,14 @@ To compile on
 
 OSX 
 
+    `gcc wolf.c -o wolf`
+    
+then to run
+
+    `./wolf`
+    
+or simply fire up the XCode project file.
+
 Linux
 
 Windows
