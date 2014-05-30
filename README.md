@@ -7,11 +7,11 @@ To compile on
 
 OSX 
 
-    `gcc wolf.c -o wolf`
+`gcc wolf.c -o wolf`
     
 then to run
 
-    `./wolf`
+`./wolf`
     
 or simply fire up the XCode project file.
 
