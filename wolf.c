@@ -21,6 +21,9 @@
 #include <net/if.h>
 #include <sys/ioctl.h>
 #include <sys/types.h>
+#include <syslog.h>
+#include <getopt.h>
+#include <stdbool.h>
 
 #ifdef __APPLE__
 //define something for os x
@@ -34,8 +37,8 @@
 
 char ppp0a[16];
 char str[1024];
-static const int port = 4343;
-static const int outport = 4567;
+int port = 4343;
+int outport = 4344;
 
 char const *getadapteraddress(char adapter[5])
 {
@@ -75,25 +78,60 @@ char const *getadapteraddress(char adapter[5])
     char ipstr[INET_ADDRSTRLEN];
     // now get it back and print it
     inet_ntop(AF_INET, &(subnet), ipstr, INET_ADDRSTRLEN);
-    printf("subnet %s \n",ipstr);
+    //printf("subnet %s \n",ipstr);
     
     return ppp0a;
 }
 
-int main(void) {
-	printf("Starting WoLf (Wake On Lan Forwarder) \n\n");
-	char const *cptr;
-	cptr = getadapteraddress(PPPNAME);
-	printf("ppp0 = %s\n",cptr);
-	cptr = getadapteraddress(ETHNAME);
-	printf("eth0 = %s\n\n",cptr);
+void usage() {
+    printf("Usage: wolf -i num (inbound port) -o num (outbound port) \n");
+}
+
+bool isValidIpAddress(char *ipAddress)
+{
+    struct sockaddr_in sa;
+    int result = inet_pton(AF_INET, ipAddress, &(sa.sin_addr));
+    return result != 0;
+}
+
+int main(int argc, char *argv[]) {
+    
+    int option = 0;
+    while ((option = getopt(argc, argv,"i:o:h:")) != -1) {
+        switch (option) {
+            case 'i' :
+                port = atoi(optarg);
+                if ((port < 1025) || (port > 65535)) port = 4343; // 1 to 1024 are not allowed on OSX
+                break;
+            case 'o' :
+                outport = atoi(optarg);
+                if ((outport < 1) || (outport > 65535)) outport = 4344;
+                break;
+            case 'h' :
+                usage();
+            default: usage();
+                exit(EXIT_FAILURE);
+        }
+    }
+    
+    if (port == outport) outport = port + 1; //make sure ports are not the same to stop endless loop
+    if (outport > 65535) outport = 4344; // dirty add 1 so check we don't go over limit
+    
+    
+    syslog (LOG_NOTICE, "Program started by user %d", getuid ());
+	printf("Starting WoLf (Wake On Lan Forwarder) \n");
+	//char const *cptr;
+	//cptr = getadapteraddress(PPPNAME);
+	//printf("%s = %s\n",PPPNAME,cptr);
+	//cptr = getadapteraddress(ETHNAME);
+	//printf("%s = %s\n\n",ETHNAME,cptr);
     
     
     int sendSocket;
     long inPacketSize;
     struct sockaddr_in servaddr,cliaddr;
     socklen_t len;
-    unsigned char mesg[101]; //wol packet size is 102 so 0 to 101 - what about secure password ?
+    unsigned char mesg[107]; //wol packet size is 102 so 0 to 101 - what about secure password ?
     
     sendSocket=socket(AF_INET,SOCK_DGRAM,0);
     
@@ -101,12 +139,12 @@ int main(void) {
     servaddr.sin_family = AF_INET;
     servaddr.sin_addr.s_addr=htonl(INADDR_ANY);
     servaddr.sin_port=htons(port);
+    printf("port set to %d \n", servaddr.sin_port);
     bind(sendSocket,(struct sockaddr *)&servaddr,sizeof(servaddr));
     
     for (;;)
     {
-        printf("Getting a packet\n");
-        printf("waiting on port %d\n", port);
+        printf("listening on port %d and sending on port %d\n", port, outport);
         
         len = sizeof(cliaddr);
         inPacketSize = recvfrom(sendSocket,mesg,1000,0,(struct sockaddr *)&cliaddr,&len);
@@ -124,7 +162,7 @@ int main(void) {
         memset(&wt, 0, sizeof(wt));
         wt.sin_family = AF_INET;
         wt.sin_port = htons(outport);
-        wt.sin_addr.s_addr = inet_addr("10.11.11.255");
+        wt.sin_addr.s_addr = inet_addr("255.255.255.255"); //getifaddrs need to think about multiple interfaces
 
         int udpflag = 1;
         int retval;
@@ -144,15 +182,14 @@ int main(void) {
             printf("%s\n", str);
         }
         
-        printf("\nPacket Received\n");
+        printf("packet received\n");
         mesg[inPacketSize] = 0;
         int y;
         for (y = 0; y < sizeof(mesg) + 1; y++)
         {
             //printf("%i  %02x \n",y,mesg[y]);
         }
-        //printf("%s",mesg);
-        printf("\nEnd Packet\n");
+        printf("end packet\n");
     }
     printf("We should never ever get here \n");
 }
