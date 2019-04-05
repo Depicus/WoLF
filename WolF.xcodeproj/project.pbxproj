@@ -23,6 +23,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		D34084BD2257464300D2E1D6 /* wolf-service */ = {isa = PBXFileReference; lastKnownFileType = text; path = "wolf-service"; sourceTree = "<group>"; };
 		D398EC651937E30300D3C5DF /* wolf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = wolf.c; sourceTree = "<group>"; };
 		D3FDE8951937E1E3002B5351 /* WolF */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = WolF; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -41,6 +42,7 @@
 		D3FDE88C1937E1E3002B5351 = {
 			isa = PBXGroup;
 			children = (
+				D34084BD2257464300D2E1D6 /* wolf-service */,
 				D398EC651937E30300D3C5DF /* wolf.c */,
 				D3FDE8961937E1E3002B5351 /* Products */,
 			);
@@ -88,6 +90,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 			);
 			mainGroup = D3FDE88C1937E1E3002B5351;

@@ -97,7 +97,7 @@ bool isValidIpAddress(char *ipAddress)
 int main(int argc, char *argv[]) {
     
     int option = 0;
-    while ((option = getopt(argc, argv,"i:o:h:")) != -1) {
+    while ((option = getopt(argc, argv,"ioh:")) != -1) {
         switch (option) {
             case 'i' :
                 port = atoi(optarg);
@@ -109,6 +109,7 @@ int main(int argc, char *argv[]) {
                 break;
             case 'h' :
                 usage();
+                // should we exit here as well ?
             default: usage();
                 exit(EXIT_FAILURE);
         }
