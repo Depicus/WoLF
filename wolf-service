@@ -1,5 +1,5 @@
 
-#!/bin/sh
+#!/bin/bash
 
 ### BEGIN INIT INFO
 # Provides:          WoLf As A Service
