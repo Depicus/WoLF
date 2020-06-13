@@ -126,7 +126,7 @@ int main(int argc, char *argv[]) {
 
 
     syslog (LOG_NOTICE, "Program started by user %d", getuid ());
-	printf("Starting WoLf (Wake On Lan Forwarder) \n");
+	printf("Starting WoLf (Wake On Lan Forwarder) listening on %s on port %d \n", ETHNAME, port );
 	//char const *cptr;
 	//cptr = getadapteraddress(PPPNAME);
 	//printf("%s = %s\n",PPPNAME,cptr);
