@@ -123,13 +123,17 @@ int main(int argc, char *argv[]) {
     if (outport > 65535) outport = 4344; // dirty add 1 so check we don't go over limit
 
 
-    syslog (LOG_NOTICE, "Program started by user %d", getuid ());
-	printf("Starting WoLf (Wake On Lan Forwarder) listening on %s on port %d \n", ETHNAME, port );
-	//char const *cptr;
+  syslog (LOG_NOTICE, "Program started by user %d", getuid ());
+
+  char const *cptr;
 	//cptr = getadapteraddress(PPPNAME);
 	//printf("%s = %s\n",PPPNAME,cptr);
-	//cptr = getadapteraddress(ETHNAME);
+	cptr = getadapteraddress(ETHNAME);
 	//printf("%s = %s\n\n",ETHNAME,cptr);
+
+	printf("Starting WoLf (Wake On Lan Forwarder) listening on %s (%s) on port %d \n", ETHNAME, cptr, port );
+	//
+
 
 
     int sendSocket;
