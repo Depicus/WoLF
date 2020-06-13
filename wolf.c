@@ -29,17 +29,15 @@
 //define something for os x
 #define ETHNAME "en0"
 #define PPPNAME "en0"
+#elif  __DOCKER__
+#define ETHNAME "eth0"
+#define PPPNAME "eth0"
 #else
 //define it for anything else
 #define ETHNAME "eth0"
 #define PPPNAME "ppp0"
 #endif
 
-#ifdef  DOCKER
-#define ETHNAME "eth0"
-#define PPPNAME "eth0"
-printf( "We are running inside a docker container!\n" );
-#endif
 
 char ppp0a[16];
 char str[1024];
@@ -146,7 +144,7 @@ int main(int argc, char *argv[]) {
     servaddr.sin_family = AF_INET;
     servaddr.sin_addr.s_addr=htonl(INADDR_ANY);
     servaddr.sin_port=htons(port);
-    printf("port set to %d \n", servaddr.sin_port);
+    //printf("port set to %d \n", servaddr.sin_port);
     bind(sendSocket,(struct sockaddr *)&servaddr,sizeof(servaddr));
 
     for (;;)
